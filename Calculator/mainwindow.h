@@ -20,6 +20,8 @@ private:
 
 private slots:
     void digit_pressed();
+    void on_pushButton_dot_released();
+    void unary_operation_pressed();
 
 
 };
