@@ -3,7 +3,7 @@
 #include<QDebug>
 
 double firstNum;
-
+bool userISTypingNum = false;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -46,71 +46,83 @@ MainWindow::~MainWindow()
 
 void MainWindow::digit_pressed()
 {
-    qDebug()<<"test";
-       QPushButton *button = (QPushButton*)sender();
+    //    qDebug()<<"test";
+        QPushButton *button = (QPushButton*)sender();
 
-       double labelNumber;
-       QString newLabel;
+        double labelNumber;
+        QString newLabel;
 
-       if(ui->pushButton_plus->isChecked() || ui->pushButton_minus->isChecked() || ui->pushButton_multiply->isChecked() ||
-               ui->pushButton_divide->isChecked())
-       {
-           labelNumber = button->text().toDouble();
+        if((ui->pushButton_plus->isChecked() || ui->pushButton_minus->isChecked() || ui->pushButton_multiply->isChecked() ||
+                ui->pushButton_divide->isChecked()) && (!userISTypingNum))
+        {
+            labelNumber = button->text().toDouble();
+            userISTypingNum = true;
+        }
+        else
+        {
+            labelNumber = (ui->label->text() + button->text()).toDouble();
+        }
+    //    labelNumber = (ui->label->text() + button->text()).toDouble();
+        newLabel = QString::number(labelNumber,'g',15);
+        ui->label->setText(newLabel);
+    }
 
-       }
-       else
-       {
-           labelNumber = (ui->label->text() + button->text()).toDouble();
-       }
-   //    labelNumber = (ui->label->text() + button->text()).toDouble();
+
+
+
+void MainWindow::on_pushButton_clear_released()
+    {
+         ui->pushButton_plus->setChecked(false);
+         ui->pushButton_minus->setChecked(false);
+         ui->pushButton_multiply->setChecked(false);
+         ui->pushButton_divide->setChecked(false);
+
+
+         userISTypingNum = false;
+
+         ui->label->setText("0");
+   }
+
+void MainWindow::on_pushButton_equal_released()
+   {
+
+    double labelNumber, secondNum;
+    QString newLabel;
+
+    secondNum = ui->label->text().toDouble();
+
+   if(ui->pushButton_plus->isChecked())
+   {
+       labelNumber = firstNum + secondNum;
        newLabel = QString::number(labelNumber,'g',15);
        ui->label->setText(newLabel);
+       ui->pushButton_plus->setChecked(false);
    }
-
-
-
-
-   void MainWindow::on_pushButton_clear_released()
+   else if(ui->pushButton_minus->isChecked())
    {
-
+       labelNumber = firstNum - secondNum;
+       newLabel = QString::number(labelNumber,'g',15);
+       ui->label->setText(newLabel);
+       ui->pushButton_minus->setChecked(false);
    }
-   void MainWindow::on_pushButton_equal_released()
+   else if(ui->pushButton_multiply->isChecked())
    {
-       double labelNumber, secondNum;
-       QString newLabel;
-
-       secondNum = ui->label->text().toDouble();
-
-      if(ui->pushButton_plus->isChecked())
-      {
-          labelNumber = firstNum + secondNum;
-          newLabel = QString::number(labelNumber,'g',15);
-          ui->label->setText(newLabel);
-          ui->pushButton_plus->setChecked(false);
-      }
-      else if(ui->pushButton_minus->isChecked())
-      {
-          labelNumber = firstNum - secondNum;
-          newLabel = QString::number(labelNumber,'g',15);
-          ui->label->setText(newLabel);
-          ui->pushButton_minus->setChecked(false);
-      }
-      else if(ui->pushButton_multiply->isChecked())
-      {
-          labelNumber = firstNum * secondNum;
-          newLabel = QString::number(labelNumber,'g',15);
-          ui->label->setText(newLabel);
-          ui->pushButton_multiply->setChecked(false);
-      }
-      else if(ui->pushButton_divide->isChecked())
-      {
-          labelNumber = firstNum / secondNum;
-          newLabel = QString::number(labelNumber,'g',15);
-          ui->label->setText(newLabel);
-          ui->pushButton_divide->setChecked(false);
-      }
-
+       labelNumber = firstNum * secondNum;
+       newLabel = QString::number(labelNumber,'g',15);
+       ui->label->setText(newLabel);
+       ui->pushButton_multiply->setChecked(false);
    }
+   else if(ui->pushButton_divide->isChecked())
+   {
+       labelNumber = firstNum / secondNum;
+       newLabel = QString::number(labelNumber,'g',15);
+       ui->label->setText(newLabel);
+       ui->pushButton_divide->setChecked(false);
+   }
+        userISTypingNum = false;
+}
+
+
 
 
 void MainWindow::binary_operation_pressed()
